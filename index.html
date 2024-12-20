@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Florida Trip Countdown</title>
+		<style>
+				body {
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						height: 100vh;
+						margin: 0;
+						background-color: #f0f0f0;
+						font-family: 'Arial', sans-serif;
+				}
+
+				#countdown-container {
+						display: flex;
+						gap: 20px;
+				}
+
+				.neu-card {
+						perspective: 800px;
+						width: 80px;
+						height: 120px;
+				}
+
+				.neu-inner {
+						width: 100%;
+						height: 100%;
+						transform-style: preserve-3d;
+						transition: transform 0.5s;
+						transform-origin: 50% 100%;
+				}
+
+				.neu-card.updated .neu-inner {
+						transform: rotateX(180deg);
+				}
+
+				.neu-face {
+						width: 100%;
+						height: 100%;
+						position: absolute;
+						backface-visibility: hidden;
+						border-radius: 16px;
+						background-color: #f0f0f0;
+						box-shadow: 8px 8px 16px #d4d4d4, -8px -8px 16px #ffffff;
+						font-size: 24px;
+						font-weight: bold;
+						color: #555;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+				}
+
+				.neu-back {
+						transform: rotateX(180deg);
+				}
+
+				.neu-text {
+						position: absolute;
+						top: 50%;
+						left: 50%;
+						transform: translate(-50%, -50%);
+						transition: transform 0.5s;
+				}
+
+				.neu-card.updated .neu-text {
+						transform: translate(-50%, -150%);
+				}
+		</style>
+</head>
+<body>
+
+<div id="countdown-container">
+		<div class="neu-card" id="days-card">
+				<div class="neu-inner">
+						<div class="neu-face" id="days-front">
+								<div class="neu-text" id="days">00</div>
+						</div>
+						<div class="neu-face neu-back" id="days-back">
+								<div class="neu-text" id="days-back-text">00</div>
+						</div>
+				</div>
+		</div>
+		<div class="neu-card" id="hours-card">
+				<div class="neu-inner">
+						<div class="neu-face" id="hours-front">
+								<div class="neu-text" id="hours">00</div>
+						</div>
+						<div class="neu-face neu-back" id="hours-back">
+								<div class="neu-text" id="hours-back-text">00</div>
+						</div>
+				</div>
+		</div>
+		<div class="neu-card" id="minutes-card">
+				<div class="neu-inner">
+						<div class="neu-face" id="minutes-front">
+								<div class="neu-text" id="minutes">00</div>
+						</div>
+						<div class="neu-face neu-back" id="minutes-back">
+								<div class="neu-text" id="minutes-back-text">00</div>
+						</div>
+				</div>
+		</div>
+		<div class="neu-card" id="seconds-card">
+				<div class="neu-inner">
+						<div class="neu-face" id="seconds-front">
+								<div class="neu-text" id="seconds">00</div>
+						</div>
+						<div class="neu-face neu-back" id="seconds-back">
+								<div class="neu-text" id="seconds-back-text">00</div>
+						</div>
+				</div>
+		</div>
+</div>
+
+<script>
+		// Set the date we're counting down to
+		var countDownDate = new Date("January 12, 2025 03:00:00").getTime(); // LEGACY: 2024-02-01T03:00:00
+
+		// Update the countdown every 1 second
+		var countdownInterval = setInterval(function() {
+				var now = new Date().getTime();
+				var distance = countDownDate - now;
+
+				var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+				var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+				var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+				// Display the countdown
+				updateCard("days", days);
+				updateCard("hours", hours);
+				updateCard("minutes", minutes);
+				updateCard("seconds", seconds);
+
+				// If the countdown is over, clear the interval
+				if (distance < 0) {
+						clearInterval(countdownInterval);
+						document.getElementById("countdown-container").innerHTML = "<div class='neu-text'>It's time for your Florida trip!</div>";
+				}
+		}, 1000);
+
+		// Helper function to update card values
+		function updateCard(cardId, value) {
+				var card = document.getElementById(cardId + "-card");
+				var frontTextElement = document.getElementById(cardId + "-front").querySelector(".neu-text");
+				var backTextElement = document.getElementById(cardId + "-back").querySelector(".neu-text");
+
+				if (frontTextElement.innerText !== padNumber(value)) {
+						card.classList.add("updated");
+						backTextElement.innerText = padNumber(value);
+
+						// Wait for the animation to finish before removing the updated class
+						setTimeout(function () {
+								card.classList.remove("updated");
+								frontTextElement.innerText = padNumber(value);
+						}, 500);
+				}
+		}
+
+		// Helper function to pad numbers with leading zeros
+		function padNumber(number) {
+				return (number < 10 ? "0" : "") + number;
+		}
+</script>
+
+</body>
+</html>
